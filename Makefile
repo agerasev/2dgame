@@ -9,7 +9,19 @@ W_CXX=em++
 AR=ar
 
 SOURCE=source/main.cpp
-HEADERS=
+HEADERS= \
+	source/object/drawable.hpp \
+	source/drawcontext.hpp \
+	source/object/dynamic.hpp \
+	source/object/object.hpp \
+	source/object/static.hpp \
+	source/world.hpp \
+	source/physics.hpp \
+	source/graphics.hpp \
+	source/action/action.hpp \
+	quadtree/tree.hpp \
+	libla/la/mat.hpp \
+	libla/la/vec.hpp
 
 D_OBJ_DIR=build/desktop/obj
 D_APP_DIR=build/desktop
@@ -17,11 +29,14 @@ D_APP_DIR=build/desktop
 W_OBJ_DIR=build/web/obj
 W_APP_DIR=build/web
 
+LIBLA_DIR=libla
 MEDIA_DIR=libmedia
 include $(MEDIA_DIR)/Makefile
 
 GFX_DIR=libgraphics
 include $(GFX_DIR)/Makefile
+
+QUADTREE_DIR=quadtree
 
 D_SOURCE=$(SOURCE)
 
@@ -31,8 +46,10 @@ D_HEADERS= \
 	$(GFX_HEADERS) $(GFX_D_HEADERS)
 
 D_INCLUDES= \
+	$(LIBLA_DIR) \
 	$(MEDIA_INCLUDES) $(MEDIA_D_INCLUDES) \
-	$(GFX_INCLUDES) $(GFX_D_INCLUDES)
+	$(GFX_INCLUDES) $(GFX_D_INCLUDES) \
+	$(QUADTREE_DIR)
 
 D_LIBS= \
 	$(MEDIA_D_LIB) $(GFX_D_LIB)
@@ -48,8 +65,8 @@ D_OBJS= \
 	$(MEDIA_D_OBJS) \
 	$(GFX_D_OBJS)
 
-D_CFLAGS=$(MEDIA_CFLAGS) $(MEDIA_D_CFLAGS) -Wall
-D_CXXFLAGS=$(MEDIA_CXXFLAGS) $(MEDIA_D_CXXFLAGS) -Wall
+D_CFLAGS=$(MEDIA_CFLAGS) $(MEDIA_D_CFLAGS) -Wall -g
+D_CXXFLAGS=$(MEDIA_CXXFLAGS) $(MEDIA_D_CXXFLAGS) -Wall -g
 D_LFLAGS=$(MEDIA_LFLAGS) $(MEDIA_D_LFLAGS) $(GFX_D_LFLAGS) 
 
 W_SOURCE=$(SOURCE)
@@ -60,8 +77,10 @@ W_HEADERS= \
 	$(GFX_HEADERS) $(GFX_W_HEADERS)
 
 W_INCLUDES= \
+	$(LIBLA_DIR) \
 	$(MEDIA_INCLUDES) $(MEDIA_W_INCLUDES) \
-	$(GFX_INCLUDES) $(GFX_W_INCLUDES)
+	$(GFX_INCLUDES) $(GFX_W_INCLUDES) \
+	$(QUADTREE_DIR)
 
 W_LIBS= \
 	$(MEDIA_W_LIB) $(GFX_W_LIB)

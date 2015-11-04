@@ -4,3 +4,9 @@
 [submodule "libgraphics"]
 	path = libgraphics
 	url = https://github.com/nthend/libgraphics.git
+[submodule "quadtree"]
+	path = quadtree
+	url = https://github.com/fti-ooad-project/quadtree.git
+[submodule "libla"]
+	path = libla
+	url = https://github.com/nthend/libla.git

@@ -1,51 +1,56 @@
 #include <media/media.hpp>
 #include <graphics/graphics.h>
 
+#include "graphics.hpp"
+
 class GraphicsHandler : public media::Graphics::Handler {
 private:
-	int mx, my;
+	GContext *context;
+	// Graphics graphics;
 	
+	bool inited = false;
+	static void callback(void *data) {
+		static_cast<GraphicsHandler *>(data)->inited = true;
+	}
+
 public:
 	GraphicsHandler() = default;
 	virtual ~GraphicsHandler() = default;
 	
 	virtual void create() override {
 		logMessage("graphics created");
-		gInit();
+		context = gCreateContext();
+		gSetInitCallback(context, callback, static_cast<void *>(this));
+		gInit(context);
 	}
 	
 	virtual void destroy() override {
 		logMessage("graphics destroyed");
-		gDispose();
+		gDispose(context);
+		gDestroyContext(context);
 	}
 	
 	virtual void resize(int w, int h) override {
 		logMessage("graphics resized %d %d", w, h);
-		gResize(w, h);
+		gResize(context, w, h);
 	}
 	
 	virtual void draw(double dt) override {
 		// logMessage("frame redrawed dt = %lf", dt);
-		float s = 100.0;
-		float matrix[4] = {s,0,0,s};
-		float vector[2] = {(float) mx, (float) my};
-		gClear();
-		gTransform(matrix);
-		gTranslate(vector);
-		gSetColorInt(G_RED);
-		gDrawRing(0.5);
-	}
-	
-	void setm(int x, int y) {
-		mx = x;
-		my = y;
+		// graphics.draw();
+		float m[4] = {100,0,0,100};
+		if(inited) {
+			gClear(context);
+			gSetColorInt(context, G_RED);
+			gTransform(context, m);
+			gDrawCircle(context);
+		}
 	}
 };
 
 class PointerHandler : public media::Pointer::Handler {
 public:
-	GraphicsHandler *g;
-	PointerHandler(GraphicsHandler *gh) : g(gh) {}
+	PointerHandler() = default;
 	virtual ~PointerHandler() = default;
 	
 	virtual void move(int buttons, ivec2 from, ivec2 to) override {
@@ -55,7 +60,6 @@ public:
 		      from.x(), from.y(), to.x(), to.y(), buttons
 		      );
 		*/
-		g->setm(to.x(), to.y());
 	}
 	
 	virtual void up(int button, ivec2 pos, int index) override {
@@ -91,7 +95,7 @@ class AppHandler : public media::App::Handler {
 public:
 	virtual void create() override {
 		GraphicsHandler *gh = new GraphicsHandler;
-		PointerHandler *ph = new PointerHandler(gh);
+		PointerHandler *ph = new PointerHandler;
 		super->getGraphics()->setHandler(gh);
 		super->getPointer()->setHandler(ph);
 		logMessage("app created");
